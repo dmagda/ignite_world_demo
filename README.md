@@ -35,3 +35,7 @@ Connect to Ignite cluster and execute the SQL script:
 !run ignite_world.sql
 ```
 Refer to this page to see SQLLine commands that work for Ignite: https://cwiki.apache.org/confluence/display/IGNITE/Overview+sqlline+tool
+
+## Running Java Code Samples
+
+Download this project and start `SqlDataProcessing`.

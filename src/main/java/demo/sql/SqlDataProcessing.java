@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+package demo.sql;
+
 import java.util.Iterator;
 import java.util.List;
 import org.apache.ignite.Ignite;
@@ -22,21 +24,12 @@ import org.apache.ignite.IgniteCache;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.cache.query.FieldsQueryCursor;
 import org.apache.ignite.cache.query.SqlFieldsQuery;
+import static demo.Params.*;
 
 /**
  *
  */
 public class SqlDataProcessing {
-    /** */
-    private static String CITY_CACHE_NAME = "SQL_PUBLIC_CITY";
-
-    /** */
-    private static String COUNTRY_CACHE_NAME = "SQL_PUBLIC_COUNTRY";
-
-    /** */
-    private static String COUNTRY_LANGUAGE_CACHE_NAME = "SQL_PUBLIC_COUNTRYLANGUAGE";
-
-
     /**
      * @param args
      */

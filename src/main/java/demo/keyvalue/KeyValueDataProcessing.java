@@ -80,6 +80,9 @@ public class KeyValueDataProcessing {
         System.out.println("Getting Amsterdam Record");
         System.out.println("HashCode = " + cityKey.hashCode());
 
-        System.out.println(cityCache.get(cityKey));
+        BinaryObject city = cityCache.get(cityKey);
+
+        System.out.println("Binary " + city);
+        System.out.println("Deserialized " + city.deserialize());
     }
 }

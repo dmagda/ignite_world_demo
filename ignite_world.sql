@@ -2,19 +2,6 @@
 -- Table structure for table `city`
 --
 
-DROP TABLE IF EXISTS `city`;
-
-CREATE TABLE `city` (
-  `ID` INT(11),
-  `Name` CHAR(35),
-  `CountryCode` CHAR(3),
-  `District` CHAR(20),
-  `Population` INT(11),
-  PRIMARY KEY (`ID`, `CountryCode`)
-) WITH "template=partitioned, backups=1, affinityKey=CountryCode";
-
-CREATE INDEX idx_country_code ON city (CountryCode);
-
 DROP TABLE IF EXISTS `country`;
 
 CREATE TABLE `country` (
@@ -34,7 +21,20 @@ CREATE TABLE `country` (
   `Capital` INT(11),
   `Code2` CHAR(2),
   PRIMARY KEY (`Code`)
-) WITH "template=partitioned, backups=1";
+) WITH "template=partitioned, backups=1, CACHE_NAME=Country, VALUE_TYPE=Country";
+
+DROP TABLE IF EXISTS `city`;
+
+CREATE TABLE `city` (
+  `ID` INT(11),
+  `Name` CHAR(35),
+  `CountryCode` CHAR(3),
+  `District` CHAR(20),
+  `Population` INT(11),
+  PRIMARY KEY (`ID`, `CountryCode`)
+) WITH "template=partitioned, backups=1, affinityKey=CountryCode, CACHE_NAME=City, KEY_TYPE=CityKey, VALUE_TYPE=City";
+
+CREATE INDEX idx_country_code ON city (CountryCode);
 
 DROP TABLE IF EXISTS `countrylanguage`;
 
@@ -44,7 +44,7 @@ CREATE TABLE `countrylanguage` (
   `IsOfficial` CHAR(2),
   `Percentage` DECIMAL(4,1),
   PRIMARY KEY (`CountryCode`,`Language`)
-) WITH "template=partitioned, backups=1, affinityKey=CountryCode";
+) WITH "template=partitioned, backups=1, affinityKey=CountryCode, CACHE_NAME=CountryLng, KEY_TYPE=CountryLngKey, VALUE_TYPE=CountryLng";
 
 CREATE INDEX idx_lang_country_code ON countrylanguage (CountryCode);
 

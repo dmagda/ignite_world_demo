@@ -7,11 +7,11 @@ import org.apache.ignite.cache.affinity.AffinityKeyMapped;
  */
 public class CityKey {
     /** */
-    private int id;
+    private int ID;
 
     /** */
     @AffinityKeyMapped
-    private String countryCode;
+    private String COUNTRYCODE;
 
     /**
      * Constructor.
@@ -20,8 +20,8 @@ public class CityKey {
      * @param countryCode Country code (affinity key).
      */
     public CityKey(int id, String countryCode) {
-        this.id = id;
-        this.countryCode = countryCode;
+        this.ID = id;
+        this.COUNTRYCODE = countryCode;
     }
 
     /** {@inheritDoc} */
@@ -34,17 +34,17 @@ public class CityKey {
 
         CityKey key = (CityKey)o;
 
-        if (id != key.id)
+        if (ID != key.ID)
             return false;
 
-        return countryCode != null ? countryCode.equals(key.countryCode) : key.countryCode == null;
+        return COUNTRYCODE != null ? COUNTRYCODE.equals(key.COUNTRYCODE) : key.COUNTRYCODE == null;
     }
 
     /** {@inheritDoc} */
     @Override public int hashCode() {
-        int result = id;
+        int result = ID;
 
-        result = 31 * result + (countryCode != null ? countryCode.hashCode() : 0);
+        result = 31 * result + (COUNTRYCODE != null ? COUNTRYCODE.hashCode() : 0);
 
         return result;
     }

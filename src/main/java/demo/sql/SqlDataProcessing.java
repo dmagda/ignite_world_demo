@@ -43,13 +43,14 @@ public class SqlDataProcessing {
 
             getMostPopulatedCities(countryCache);
             getTopCitiesInThreeCountries(countryCache);
+            getCityDetails(cityCache, 5);
         }
     }
 
     private static void getMostPopulatedCities(IgniteCache countryCache) {
         SqlFieldsQuery query = new SqlFieldsQuery(
-            "SELECT name, MAX(population) as max_pop FROM country " +
-            "GROUP BY name, population ORDER BY max_pop DESC LIMIT 10");
+            "SELECT name, population FROM country " +
+            "ORDER BY population DESC LIMIT 10");
 
         FieldsQueryCursor<List<?>> cursor = countryCache.query(query);
 
@@ -83,6 +84,26 @@ public class SqlDataProcessing {
             List row = iterator.next();
 
             System.out.println("    >>> " + row.get(2) + " people live in " + row.get(1) + ", " + row.get(0));
+        }
+    }
+
+    private static void getCityDetails(IgniteCache cityCache, int cityId) {
+        SqlFieldsQuery query = new SqlFieldsQuery("SELECT * FROM City WHERE id = ?").setArgs(cityId);
+
+        FieldsQueryCursor<List<?>> cursor = cityCache.query(query);
+
+        Iterator<List<?>> iterator = cursor.iterator();
+
+        int colCount = cursor.getColumnsCount();
+
+        System.out.println();
+        System.out.println(">>> City Info:");
+
+        while (iterator.hasNext()) {
+            List row = iterator.next();
+
+            for (int i = 0; i < colCount; i++)
+                System.out.println(row.get(i));
         }
     }
 }

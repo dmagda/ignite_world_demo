@@ -22,6 +22,8 @@ import demo.model.CityKey;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.IgniteCache;
 import org.apache.ignite.Ignition;
+import org.apache.ignite.binary.BinaryObject;
+import org.apache.ignite.binary.BinaryObjectBuilder;
 
 import static demo.Params.CITY_CACHE_NAME;
 import static demo.Params.COUNTRY_CACHE_NAME;
@@ -37,10 +39,14 @@ public class KeyValueDataProcessing {
     public static void main(String[] args) {
         Ignition.setClientMode(true);
 
-        try (Ignite ignite = Ignition.start()) {
+        try (Ignite ignite = Ignition.start("config/ignite-config.xml")) {
             IgniteCache<CityKey, City> cityCache = ignite.cache(CITY_CACHE_NAME);
+            IgniteCache<BinaryObject, BinaryObject> cityCacheBinary = cityCache.withKeepBinary();
+
             IgniteCache countryCache = ignite.cache(COUNTRY_CACHE_NAME);
             IgniteCache languageCache = ignite.cache(COUNTRY_LANGUAGE_CACHE_NAME);
+
+            accessCityCacheBinary(ignite, cityCacheBinary);
 
             accessCityCache(cityCache);
         }
@@ -56,5 +62,24 @@ public class KeyValueDataProcessing {
         System.out.println("HashCode = " + new CityKey(5, "NLD").hashCode());
 
         System.out.println(cityCache.get(new CityKey(5, "NLD")));
+    }
+
+    /**
+     * Processes data stored in a cache with key-value APIs.
+     *
+     * @param cityCache City cache.
+     */
+    private static void accessCityCacheBinary(Ignite ignite, IgniteCache<BinaryObject, BinaryObject> cityCache) {
+        BinaryObjectBuilder cityKeyBuilder = ignite.binary().builder("CityKey");
+
+        cityKeyBuilder.setField("id", 5);
+        cityKeyBuilder.setField("countryCode", "NLD");
+
+        BinaryObject cityKey = cityKeyBuilder.build();
+
+        System.out.println("Getting Amsterdam Record");
+        System.out.println("HashCode = " + cityKey.hashCode());
+
+        System.out.println(cityCache.get(cityKey));
     }
 }

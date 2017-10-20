@@ -22,11 +22,11 @@ package demo;
  */
 public class Params {
     /** */
-    public static String CITY_CACHE_NAME = "SQL_PUBLIC_CITY";
+    public static String CITY_CACHE_NAME = "City";
 
     /** */
-    public static String COUNTRY_CACHE_NAME = "SQL_PUBLIC_COUNTRY";
+    public static String COUNTRY_CACHE_NAME = "Country";
 
     /** */
-    public static String COUNTRY_LANGUAGE_CACHE_NAME = "SQL_PUBLIC_COUNTRYLANGUAGE";
+    public static String COUNTRY_LANGUAGE_CACHE_NAME = "CountryLng";
 }

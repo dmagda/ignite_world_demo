@@ -36,7 +36,7 @@ public class SqlDataProcessing {
     public static void main(String[] args) {
         Ignition.setClientMode(true);
 
-        try (Ignite ignite = Ignition.start()) {
+        try (Ignite ignite = Ignition.start("config/ignite-config.xml")) {
             IgniteCache cityCache = ignite.cache(CITY_CACHE_NAME);
             IgniteCache countryCache = ignite.cache(COUNTRY_CACHE_NAME);
             IgniteCache languageCache = ignite.cache(COUNTRY_LANGUAGE_CACHE_NAME);

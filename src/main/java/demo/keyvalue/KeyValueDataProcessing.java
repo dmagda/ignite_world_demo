@@ -46,9 +46,9 @@ public class KeyValueDataProcessing {
             IgniteCache countryCache = ignite.cache(COUNTRY_CACHE_NAME);
             IgniteCache languageCache = ignite.cache(COUNTRY_LANGUAGE_CACHE_NAME);
 
-            accessCityCacheBinary(ignite, cityCacheBinary);
-
             accessCityCache(cityCache);
+
+            accessCityCacheBinary(ignite, cityCacheBinary);
         }
     }
 
@@ -59,7 +59,6 @@ public class KeyValueDataProcessing {
      */
     private static void accessCityCache(IgniteCache<CityKey, City> cityCache) {
         System.out.println("Getting Amsterdam Record");
-        System.out.println("HashCode = " + new CityKey(5, "NLD").hashCode());
 
         System.out.println(cityCache.get(new CityKey(5, "NLD")));
     }
@@ -70,14 +69,14 @@ public class KeyValueDataProcessing {
      * @param cityCache City cache.
      */
     private static void accessCityCacheBinary(Ignite ignite, IgniteCache<BinaryObject, BinaryObject> cityCache) {
-        BinaryObjectBuilder cityKeyBuilder = ignite.binary().builder("CityKey");
+        BinaryObjectBuilder cityKeyBuilder = ignite.binary().builder("demo.model.CityKey");
 
         cityKeyBuilder.setField("id", 5);
         cityKeyBuilder.setField("countryCode", "NLD");
 
         BinaryObject cityKey = cityKeyBuilder.build();
 
-        System.out.println("Getting Amsterdam Record");
+        System.out.println("Getting Amsterdam Record - Binary");
         System.out.println("HashCode = " + cityKey.hashCode());
 
         BinaryObject city = cityCache.get(cityKey);

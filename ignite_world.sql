@@ -21,7 +21,7 @@ CREATE TABLE `country` (
   `Capital` INT(11),
   `Code2` CHAR(2),
   PRIMARY KEY (`Code`)
-) WITH "template=partitioned, backups=1, CACHE_NAME=Country, VALUE_TYPE=Country";
+) WITH "template=partitioned, backups=1, CACHE_NAME=Country, VALUE_TYPE=demo.model.Country";
 
 DROP TABLE IF EXISTS `city`;
 
@@ -32,7 +32,7 @@ CREATE TABLE `city` (
   `District` CHAR(20),
   `Population` INT(11),
   PRIMARY KEY (`ID`, `CountryCode`)
-) WITH "template=partitioned, backups=1, affinityKey=CountryCode, CACHE_NAME=City, KEY_TYPE=CityKey, VALUE_TYPE=City";
+) WITH "template=partitioned, backups=1, affinityKey=CountryCode, CACHE_NAME=City, KEY_TYPE=demo.model.CityKey, VALUE_TYPE=demo.model.City";
 
 CREATE INDEX idx_country_code ON city (CountryCode);
 
@@ -44,7 +44,7 @@ CREATE TABLE `countrylanguage` (
   `IsOfficial` CHAR(2),
   `Percentage` DECIMAL(4,1),
   PRIMARY KEY (`CountryCode`,`Language`)
-) WITH "template=partitioned, backups=1, affinityKey=CountryCode, CACHE_NAME=CountryLng, KEY_TYPE=CountryLngKey, VALUE_TYPE=CountryLng";
+) WITH "template=partitioned, backups=1, affinityKey=CountryCode, CACHE_NAME=CountryLng, KEY_TYPE=demo.model.CountryLngKey, VALUE_TYPE=demo.model.CountryLng";
 
 CREATE INDEX idx_lang_country_code ON countrylanguage (CountryCode);
 

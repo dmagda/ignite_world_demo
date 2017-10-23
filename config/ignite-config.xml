@@ -36,15 +36,15 @@
             Make sure only class's simple name is used during a object
             serialization/deserialization via key-value API.
         -->
-        <property name="binaryConfiguration">
-            <bean class="org.apache.ignite.configuration.BinaryConfiguration">
-                <property name="nameMapper">
-                    <bean class="org.apache.ignite.binary.BinaryBasicNameMapper">
-                        <property name="simpleName" value="true"/>
-                    </bean>
-                </property>
-            </bean>
-        </property>
+        <!--<property name="binaryConfiguration">-->
+            <!--<bean class="org.apache.ignite.configuration.BinaryConfiguration">-->
+                <!--<property name="nameMapper">-->
+                    <!--<bean class="org.apache.ignite.binary.BinaryBasicNameMapper">-->
+                        <!--<property name="simpleName" value="true"/>-->
+                    <!--</bean>-->
+                <!--</property>-->
+            <!--</bean>-->
+        <!--</property>-->
 
         <!-- Explicitly configure TCP discovery SPI to provide list of initial nodes. -->
         <property name="discoverySpi">

@@ -19,11 +19,18 @@ package demo.keyvalue;
 
 import demo.model.City;
 import demo.model.CityKey;
+import javax.cache.processor.EntryProcessor;
+import javax.cache.processor.EntryProcessorException;
+import javax.cache.processor.MutableEntry;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.IgniteCache;
+import org.apache.ignite.IgniteTransactions;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.binary.BinaryObject;
 import org.apache.ignite.binary.BinaryObjectBuilder;
+import org.apache.ignite.transactions.Transaction;
+import org.apache.ignite.transactions.TransactionConcurrency;
+import org.apache.ignite.transactions.TransactionIsolation;
 
 import static demo.Params.CITY_CACHE_NAME;
 import static demo.Params.COUNTRY_CACHE_NAME;
@@ -41,14 +48,10 @@ public class KeyValueDataProcessing {
 
         try (Ignite ignite = Ignition.start("config/ignite-config.xml")) {
             IgniteCache<CityKey, City> cityCache = ignite.cache(CITY_CACHE_NAME);
-            IgniteCache<BinaryObject, BinaryObject> cityCacheBinary = cityCache.withKeepBinary();
-
-            IgniteCache countryCache = ignite.cache(COUNTRY_CACHE_NAME);
-            IgniteCache languageCache = ignite.cache(COUNTRY_LANGUAGE_CACHE_NAME);
 
             accessCityCache(cityCache);
 
-            accessCityCacheBinary(ignite, cityCacheBinary);
+            migrateBetweenCities(ignite, cityCache);
         }
     }
 
@@ -58,30 +61,60 @@ public class KeyValueDataProcessing {
      * @param cityCache City cache.
      */
     private static void accessCityCache(IgniteCache<CityKey, City> cityCache) {
-        System.out.println("Getting Amsterdam Record");
+        CityKey key = new CityKey(5, "NLD");
+        City city = cityCache.get(key);
 
-        System.out.println(cityCache.get(new CityKey(5, "NLD")));
+        System.out.println(">> Getting Amsterdam Record:");
+        System.out.println(city);
+
+        System.out.println(">> Updating Amsterdam record:");
+        city.setPopulation(city.getPopulation() - 10_000);
+
+        cityCache.put(key, city);
+
+        System.out.println(cityCache.get(key));
     }
 
     /**
-     * Processes data stored in a cache with key-value APIs.
+     * Moving people between cities using transactions.
      *
+     * @param ignite Ignite connection reference.
      * @param cityCache City cache.
      */
-    private static void accessCityCacheBinary(Ignite ignite, IgniteCache<BinaryObject, BinaryObject> cityCache) {
-        BinaryObjectBuilder cityKeyBuilder = ignite.binary().builder("demo.model.CityKey");
+    private static void migrateBetweenCities(Ignite ignite, IgniteCache<CityKey, City> cityCache) {
+        IgniteTransactions igniteTx = ignite.transactions();
 
-        cityKeyBuilder.setField("id", 5);
-        cityKeyBuilder.setField("countryCode", "NLD");
+        /** Amsterdam Key. */
+        CityKey amKey = new CityKey(5, "NLD");
 
-        BinaryObject cityKey = cityKeyBuilder.build();
+        /** Berlin Key. */
+        CityKey berKey = new CityKey(3068, "DEU");
 
-        System.out.println("Getting Amsterdam Record - Binary");
-        System.out.println("HashCode = " + cityKey.hashCode());
+        System.out.println();
+        System.out.println(">> Moving people between Amsterdam and Berlin");
 
-        BinaryObject city = cityCache.get(cityKey);
+        try (Transaction tx = igniteTx.txStart(TransactionConcurrency.PESSIMISTIC,TransactionIsolation.REPEATABLE_READ)) {
+            City amsterdam = cityCache.get(amKey);
+            City berlin = cityCache.get(berKey);
 
-        System.out.println("Binary " + city);
-        System.out.println("Deserialized " + city.deserialize());
+            System.out.println(">> Before update:");
+            System.out.println(amsterdam);
+            System.out.println(berlin);
+
+            /** Moving people between cities. **/
+            amsterdam.setPopulation(amsterdam.getPopulation() + 100_000);
+            berlin.setPopulation(berlin.getPopulation() - 100_000);
+
+            /** Applying changes in a transactional fashion. */
+            cityCache.put(amKey, amsterdam);
+            cityCache.put(berKey, berlin);
+        }
+
+        City amsterdam = cityCache.get(amKey);
+        City berlin = cityCache.get(berKey);
+
+        System.out.println(">> After update:");
+        System.out.println(amsterdam);
+        System.out.println(berlin);
     }
 }

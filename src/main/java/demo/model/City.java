@@ -55,6 +55,18 @@ public class City {
         return population;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public void setPopulation(int population) {
+        this.population = population;
+    }
+
     /** {@inheritDoc} */
     @Override public String toString() {
         return "City{" +

@@ -32,19 +32,27 @@
         <!-- Set to true to enable distributed class loading for examples, default is false. -->
         <property name="peerClassLoadingEnabled" value="true"/>
 
-        <!--
-            Make sure only class's simple name is used during a object
-            serialization/deserialization via key-value API.
-        -->
-        <!--<property name="binaryConfiguration">-->
-            <!--<bean class="org.apache.ignite.configuration.BinaryConfiguration">-->
-                <!--<property name="nameMapper">-->
-                    <!--<bean class="org.apache.ignite.binary.BinaryBasicNameMapper">-->
-                        <!--<property name="simpleName" value="true"/>-->
-                    <!--</bean>-->
-                <!--</property>-->
-            <!--</bean>-->
-        <!--</property>-->
+        <!-- Memory configuration. -->
+        <property name="dataStorageConfiguration">
+            <bean class="org.apache.ignite.configuration.DataStorageConfiguration">
+                <property name="defaultDataRegionConfiguration">
+                    <bean class="org.apache.ignite.configuration.DataRegionConfiguration">
+                        <!-- max RAM size -->
+                        <property name="maxSize" value="#{500 * 1024 * 1024}"/>
+
+                        <!-- memory metrics -->
+                        <property name="metricsEnabled" value="true"/>
+
+                        <!-- Enabling persistence. -->
+                        <property name="persistenceEnabled" value="true"/>
+                    </bean>
+                </property>
+
+                <!-- persistence metrics -->
+                <property name="metricsEnabled" value="true"/>
+            </bean>
+        </property>
+
 
         <!-- Explicitly configure TCP discovery SPI to provide list of initial nodes. -->
         <property name="discoverySpi">
@@ -55,9 +63,7 @@
                         instead os static IP based discovery. For information on all options refer
                         to our documentation: http://apacheignite.readme.io/docs/cluster-config
                     -->
-                    <!-- Uncomment static IP finder to enable static-based discovery of initial nodes. -->
-                    <!--<bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">-->
-                    <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder">
+                    <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">
                         <property name="addresses">
                             <list>
                                 <!-- In distributed environment, replace with actual host IP address. -->
